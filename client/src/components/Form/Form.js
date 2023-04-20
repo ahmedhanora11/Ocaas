@@ -1,10 +1,66 @@
-import React from "react";
-import useStyles from "./styles"
+import React, {useState, useEffect} from "react";
+import useStyles from "./styles";
+import { TextField, Button, Typography, Paper } from '@material-ui/core';
+import FileBase from 'react-file-base64';
+import { useDispatch, useSelector } from "react-redux";
+import { createPost, updatePost } from "../../actions/posts";
 
-const Form = () => {
+const Form = ({currentId, setCurrentId}) => {
+    //post data information types
+    const [postData, setPostData] = useState({
+        creator: '', title: '', message: '', tags: '', selectedFile: ''
+    });
+
+    const post = useSelector((state) => (currentId ? state.posts.find((question) => question._id === currentId) : null));
+
+    const dispatch = useDispatch();
+
     const classes = useStyles();
+    
+    //handle submit
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if(currentId){
+            dispatch(updatePost(currentId, postData));
+        } else {
+            dispatch(createPost(postData));
+        }
+        clear();
+        
+    }
+
+    useEffect(() => {
+        if (post) setPostData(post);
+      }, [post]);
+
+    const clear = () => {
+        setCurrentId(null);
+        setPostData({creator: '', title: '', message: '', tags: '', selectedFile: ''})
+    }
+
     return (
-        <h1 className={classes.form}>Form</h1>
+        <Paper className={classes.paper}>
+            <form className={`${classes.root} ${classes.form}`} noValidate autoComplete="off" onSubmit={handleSubmit}>
+                <Typography variant="h5">
+                    {currentId ? 'Edit' : 'Create'} a post
+                </Typography>
+                <TextField name="creator" label="Creator" fullWidth variant="outlined" value={postData.creator} onChange={(e) => setPostData({ ...postData, creator: e.target.value })}/>
+                <TextField name="title" label="Title" fullWidth variant="outlined" value={postData.title} onChange={(e) => setPostData({ ...postData, title: e.target.value })}/>
+                <TextField name="message" label="Question?" fullWidth variant="outlined" value={postData.message} onChange={(e) => setPostData({ ...postData, message: e.target.value })}/>
+                <TextField name="tags" label="Tags" fullWidth variant="outlined" value={postData.tags} onChange={(e) => setPostData({ ...postData, tags: e.target.value })}/>
+                <div className={classes.fileInput}>
+                    <FileBase 
+                        type="false"
+                        multiple={false}
+                        onDone={({base64}) => setPostData({ ...postData, selectedFile: base64 })}
+                    />
+                </div>
+                <Button className={classes.buttonSubmit} variant="contained" color="primary" size="large" type="submit" fullWidth> Submit </Button>
+                <Button  variant="contained" color="secondary" size="small" onClick={clear} fullWidth> Clear </Button>
+            </form>
+
+        </Paper>
     )
 }
 
