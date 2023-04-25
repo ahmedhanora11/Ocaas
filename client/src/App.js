@@ -1,48 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Container, AppBar, Typography, Grow, Grid } from "@material-ui/core"
-//Dispatch an action hook
-import { useDispatch } from "react-redux";
-//actions imports
-import { getPosts } from './actions/posts';
+import React from "react";
+import { Container } from "@material-ui/core"
 
-import OCAAS from "./images/OCAAS.png" //logo
-import Posts from "./components/Posts/Posts";
-import Form from "./components/Form/Form";
-import useStyles from "./styles"
+import { Switch, Route, BrowserRouter } from "react-router-dom";
+
+import Navbar from "./components/Navbar/Navbar";
+import Home from "./components/Home/Home";
+import Auth from "./components/Auth/Auth";
 
 const App = () => {
-
-    const classes = useStyles();
-    const dispatch = useDispatch();
-    const [currentId, setCurrentId] = useState(null);
-
-    useEffect(() => {
-        dispatch(getPosts());
-    }, [currentId, dispatch]);
-
     return (
-        
+        <BrowserRouter>
         <Container maxWidth= "lg" >
-            <AppBar className={classes.appBar} position="static" color="inharit">
-                <img className={classes.image} src={OCAAS} alt="OCAAS" height="62"/>
-                <Typography className={classes.heading} variant="h2" align="center">
-                    OCAAS
-                </Typography>
-            </AppBar>
-            <Grow in>
-                <Container>
-                    <Grid container justify="space-between" alignItems="stretch" spacing={3}>
-                        <Grid item xs={12} sm={7} >
-                            <Posts setCurrentId={setCurrentId} />
-                        </Grid>
-                        <Grid item xs={12} sm={4} >
-                            <Form currentId={currentId} setCurrentId={setCurrentId} />
-                        </Grid>
-                    </Grid>
-                </Container>
-            </Grow>
+            <Navbar />
+            <Switch>
+                <Route path="/" exact component={Home} /> {/* Home Path */}
+                <Route path="/auth" exact component={Auth} /> {/* Auth Path */}
+            </Switch>
         </Container>
-
+        </BrowserRouter>
     );
 }
 
