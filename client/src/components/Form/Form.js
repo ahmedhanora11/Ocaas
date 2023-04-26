@@ -8,7 +8,7 @@ import { createPost, updatePost } from "../../actions/posts";
 const Form = ({currentId, setCurrentId}) => {
     //post data information types
     const [postData, setPostData] = useState({
-        creator: '', title: '', message: '', tags: '', selectedFile: ''
+         title: '', message: '', tags: '', selectedFile: ''
     });
 
     const post = useSelector((state) => (currentId ? state.posts.find((question) => question._id === currentId) : null));
@@ -16,19 +16,22 @@ const Form = ({currentId, setCurrentId}) => {
     const dispatch = useDispatch();
 
     const classes = useStyles();
+
+    const user = JSON.parse(localStorage.getItem('profile'));
     
     //handle submit
     const handleSubmit = (e) => {
         e.preventDefault();
 
         if(currentId){
-            dispatch(updatePost(currentId, postData));
+            dispatch(updatePost(currentId, { ...postData, name: user?.result?.name }));
         } else {
-            dispatch(createPost(postData));
+            dispatch(createPost({ ...postData, name: user?.result?.name }));
         }
         clear();
         
-    }
+    };
+
 
     useEffect(() => {
         if (post) setPostData(post);
@@ -36,7 +39,18 @@ const Form = ({currentId, setCurrentId}) => {
 
     const clear = () => {
         setCurrentId(null);
-        setPostData({creator: '', title: '', message: '', tags: '', selectedFile: ''})
+        setPostData({ title: '', message: '', tags: '', selectedFile: ''})
+    };
+
+    if (!user?.result?.name) {
+        return (
+            <Paper className={classes.paper}>
+                <Typography variant="h6" align="center">
+                    Please Sign in to be able to ask and publish questions.
+                </Typography>
+
+            </Paper>
+        );
     }
 
     return (
@@ -45,7 +59,7 @@ const Form = ({currentId, setCurrentId}) => {
                 <Typography variant="h5">
                     {currentId ? 'Edit' : 'Create'} a post
                 </Typography>
-                <TextField name="creator" label="Creator" fullWidth variant="outlined" value={postData.creator} onChange={(e) => setPostData({ ...postData, creator: e.target.value })}/>
+                
                 <TextField name="title" label="Title" fullWidth variant="outlined" value={postData.title} onChange={(e) => setPostData({ ...postData, title: e.target.value })}/>
                 <TextField name="message" label="Question?" fullWidth variant="outlined" value={postData.message} onChange={(e) => setPostData({ ...postData, message: e.target.value })}/>
                 <TextField name="tags" label="Tags" fullWidth variant="outlined" value={postData.tags} onChange={(e) => setPostData({ ...postData, tags: e.target.value.split(',') })}/>
