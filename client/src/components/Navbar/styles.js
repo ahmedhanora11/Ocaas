@@ -21,8 +21,9 @@ export default makeStyles((theme) => ({
         fontWeight: 300,
     },
     image: {
-        marginLeft: '0px',
-        marginTop: '5px',
+        marginRight: '6px',
+        marginTop: '0px',
+        height: "66px"
     },
     toolbar: {
         display: 'flex',
