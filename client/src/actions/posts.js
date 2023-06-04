@@ -1,7 +1,22 @@
 import * as api from '../api';
-import { START_LOADING, END_LOADING, FETCH_ALL, CREATE, UPDATE, DELETE, LIKE, FETCH_BY_SEARCH} from '../constants/actionTypes.js'
+import { START_LOADING, END_LOADING, FETCH_ALL, FETCH_POST, CREATE, UPDATE, DELETE, LIKE, FETCH_BY_SEARCH} from '../constants/actionTypes.js'
 
 //Action creators - functions that create actions
+
+// get posts
+export const getPost = (id) => async (dispatch) => {
+  try {
+
+    dispatch({ type: START_LOADING });
+    const { data } = await api.fetchPost(id);
+
+    dispatch({ type: FETCH_POST, payload: data });
+    dispatch({ type: END_LOADING });
+
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 // get posts
 export const getPosts = (page) => async (dispatch) => {
