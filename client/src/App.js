@@ -39,6 +39,7 @@ const App = () => {
         </Container>
         </BrowserRouter>
 
+        {/* Ocaas chatbot */}
         <Container>
             <OcaasChat/>
         </Container>

@@ -54,7 +54,7 @@ const Form = ({currentId, setCurrentId}) => {
     }
 
     return (
-        <Paper className={classes.paper}>
+        <Paper elevation={6} className={classes.paper}>
             <form className={`${classes.root} ${classes.form}`} noValidate autoComplete="off" onSubmit={handleSubmit}>
                 <Typography variant="h5">
                     {currentId ? 'Edit' : 'Create'} a post
