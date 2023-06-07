@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import useStyles from "./styles"
 import { Card, CardActions, CardContent, CardMedia, Button, Typography, ButtonBase } from '@material-ui/core/';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
@@ -15,6 +15,12 @@ const Post = ({ post, setCurrentId }) => {
     const dispatch = useDispatch();
     const user = JSON.parse(localStorage.getItem('profile'));
     const history = useHistory();
+    const [likes, setLikes] = useState(post?.likes);
+
+    const handleLike = async () => {
+        dispatch(likePost(post._id));
+        
+    };
 
     const Likes = () => {
         if (post.likes.length > 0){
@@ -41,12 +47,14 @@ const Post = ({ post, setCurrentId }) => {
                 <Typography variant="h6">{post.name}</Typography>
                 <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
             </div>
+            </ButtonBase>
             {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator ) && (
             <div className={classes.overlay2}>
                 <Button style={{ color: 'white' }} size="small" 
                 onClick={() => setCurrentId(post._id)}><MoreHorizIcon fontSize="default" /></Button>
             </div>
             )}
+            <ButtonBase className={classes.cardAction} onClick={openPost}>
             <div className={classes.details}>
                 <Typography variant="body2" color="textSecondary" component="h2">{post.tags.map((tag) => `#${tag} `)}</Typography>
             </div>
@@ -57,8 +65,9 @@ const Post = ({ post, setCurrentId }) => {
 
             </ButtonBase>
             
+            
             <CardActions className={classes.cardActions}>
-                <Button size="small" color="primary" disabled={!user?.result} onClick={() => dispatch(likePost(post._id))}>
+                <Button size="small" color="primary" disabled={!user?.result} onClick={handleLike}>
                     <Likes />
                 </Button>
 

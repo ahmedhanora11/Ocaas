@@ -3,9 +3,9 @@ import { Paper, Typography, CircularProgress, Divider } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useParams, useHistory } from 'react-router-dom';
-import { getPost } from '../../actions/posts';
+import { getPost, getPostsBySearch } from '../../actions/posts';
 import useStyles from './styles';
-
+import CommentSection from './CommentSection';
 const PostDetails = () => {
   const { post, posts, isLoading } = useSelector((state) => state.posts);
   const dispatch = useDispatch();
@@ -17,6 +17,12 @@ const PostDetails = () => {
   useEffect(() => {
     dispatch(getPost(id));
   }, [id]);
+
+  useEffect(() => {
+    if (post) {
+      dispatch(getPostsBySearch({ search: 'none', tags: post?.tags.join(',')}));
+    }
+  }, [post]);
   
   if(!post) return null;
 
@@ -28,6 +34,10 @@ const PostDetails = () => {
      );
   }
   
+
+  const recommendedPosts = posts.filter(({ _id}) => _id !== post._id);
+
+  const openPost = (_id) => history.push(`/posts/${_id}`);
 
   return (
     
@@ -41,16 +51,35 @@ const PostDetails = () => {
           <Typography variant="h6">Created by: {post.name}</Typography>
           <Typography variant="body1">{moment(post.createdAt).fromNow()}</Typography>
           <Divider style={{ margin: '20px 0' }} />
-          <Typography variant="body1"><strong>Comments - coming soon!</strong></Typography>
+          <CommentSection post={post} />
           <Divider style={{ margin: '20px 0' }} />
         </div>
         <div className={classes.imageSection}>
           <img className={classes.media} src={post.selectedFile || 'https://user-images.githubusercontent.com/194400/49531010-48dad180-f8b1-11e8-8d89-1e61320e1d82.png'} alt={post.title} />
         </div>
       </div>
+      
       {/* Recommended posts */}
+      {recommendedPosts.length && (
+        <div className={classes.section}>
+          <Typography variant='h5' gutterBottom > You might also like: </Typography>
+          <Divider />
+          <div className={classes.recommendedPosts}>
+            {recommendedPosts.map(({ title, message, name, likes, selectedFile, _id }) => (
+              <div style={{ margin: '22px', cursor: "pointer"}} key={_id} onClick={() => openPost(_id)}>
+                <Typography variant='h6' gutterBottom>{title}</Typography>
+                <Typography variant='subtitle2' gutterBottom>{name}</Typography>
+                <Typography variant='subtitle2' gutterBottom>{message}</Typography>
+                <Typography variant='subtitle1' gutterBottom>Likes: {likes.length}</Typography>
+                <img src={selectedFile} width="222px" />
+              </div> 
+            ))}
+          </div>
+        </div>
+      )}
       </Paper>
-  )
-}
+      
+  );
+};
 
 export default PostDetails
