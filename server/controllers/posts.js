@@ -31,7 +31,7 @@ export const getPostsBySearch = async (req, res) => {
 
         res.json({ data: posts });
     } catch (error) {
-        res.status(404).json({ message: error.message });
+        res.json({ message: error });
     }
 }
 
@@ -108,5 +108,18 @@ export const likePost = async (req, res) => {
     res.json(updatedPost);
 }
 
+export const commentPost = async (req, res) => {
+    const { id } = req.params;
+    const { value } = req.body;
+
+    const post = await PostMessage.findById(id); //get post from the DB
+
+    post.comments.push(value); // adding comments to it
+
+    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true }) //update the DB with the latest comments
+
+    res.json(updatedPost);
+
+}
 
 export default router;
