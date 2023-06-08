@@ -48,7 +48,7 @@ const Post = ({ post, setCurrentId }) => {
                 <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
             </div>
             </ButtonBase>
-            {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator ) && (
+            {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator || user?.result?._id === '64491937b8afcaa9255eceb5' || user?.result?._id === '64819b6bec953d4d871bef5e') && (
             <div className={classes.overlay2}>
                 <Button style={{ color: 'white' }} size="small" 
                 onClick={() => setCurrentId(post._id)}><MoreHorizIcon fontSize="default" /></Button>
@@ -71,7 +71,7 @@ const Post = ({ post, setCurrentId }) => {
                     <Likes />
                 </Button>
 
-                {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator ) && (
+                {(user?.result?.sub === post?.creator || user?.result?._id === post?.creator || user?.result?._id === '64491937b8afcaa9255eceb5' || user?.result?._id === '64819b6bec953d4d871bef5e') && (
                 <Button size="small" color="primary" onClick={() => dispatch(deletePost(post._id))}><DeleteIcon fontSize="small" /> Delete</Button>
                 )}
             
