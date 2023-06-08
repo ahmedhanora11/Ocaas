@@ -16,6 +16,6 @@ router.post('/', auth, createPost);
 router.patch('/:id', auth, updatePost); //user can control only their posts
 router.delete('/:id', auth, deletePost); //user can delete only their posts
 router.patch('/:id/likePost', auth, likePost); //liking one post only at the backend
-router.post('/:id/commentPost', auth, commentPost); //liking one post only at the backend
+router.post('/:id/commentPost', auth, commentPost); //
 
 export default router;
